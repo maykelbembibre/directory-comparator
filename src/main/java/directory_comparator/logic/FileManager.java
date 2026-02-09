@@ -39,10 +39,10 @@ public class FileManager {
 			throw new FileException("You must select the results folder.");
 		}
     	if (!oldDirectory.isDirectory()) {
-    		throw new FileException("The old directory doesn't exist.");
+    		throw new FileException("The old folder doesn't exist.");
     	}
     	if (!newDirectory.isDirectory()) {
-    		throw new FileException("The new directory doesn't exist.");
+    		throw new FileException("The new folder doesn't exist.");
     	}
     	this.oldDirectory = oldDirectory;
 		this.newDirectory = newDirectory;
