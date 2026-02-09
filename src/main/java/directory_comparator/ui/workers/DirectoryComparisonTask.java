@@ -126,12 +126,23 @@ public class DirectoryComparisonTask extends SwingWorker<Void, Void> {
         } else if (this.comparisonResults == null) {
         	this.statusNote.setText("Error: there are not comparison results.");
         } else {
+        	int changedFiles = this.comparisonResults.getChangedFilePaths().size();
+        	int addedFiles = this.comparisonResults.getNewFilePaths().size();
+        	int deletedFiles = this.oldFilesThatNotExistInNewDirectory.size();
+        	String changesString;
+        	if (changedFiles + addedFiles + deletedFiles == 0) {
+        		changesString = "The two folders are identical.";
+        	} else {
+        		changesString = "Files changed in new folder: " + changedFiles
+        		+ ".\nFiles added in new folder: " + addedFiles
+        		+ ".\nFiles deleted in new folder: " + deletedFiles + ".";
+        	}
         	String zeroKbFiles = printCollection(this.comparisonResults.getZeroKbFilePaths());
         	String oldFilesThatNotExistInNew = printCollection(this.oldFilesThatNotExistInNewDirectory);
         	this.statusNote.setText(
         		"File comparison has been completed.\nFiles in old folder: " + this.totalOldFiles
-        		+ ".\nFiles in new folder: " + this.totalNewFiles + "\n\nZero KB files"
-        		+ zeroKbFiles
+        		+ ".\nFiles in new folder: " + this.totalNewFiles + ".\n" + changesString
+        		+ "\n\nZero KB files" + zeroKbFiles
         		+ "\n\nOld files that don't exist in new directory"
         		+ oldFilesThatNotExistInNew
         	);
@@ -158,7 +169,8 @@ public class DirectoryComparisonTask extends SwingWorker<Void, Void> {
     			Optional<Path> oldFilePath = this.fileManager.locateOldFile(newDirectoryChild.toPath());
     			if (newDirectoryChild.length() == 0) {
     				this.comparisonResults.addZeroKbFilePath(newDirectoryChild.getAbsolutePath());
-    			} else if(!oldFilePath.isPresent()) {
+    			}
+    			if(!oldFilePath.isPresent()) {
     				this.comparisonResults.addNewFilePath(newDirectoryChild.getAbsolutePath());
     			} else if (!FileManager.filesEqual(Path.of(newDirectoryChild.getAbsolutePath()), oldFilePath.get())) {
     				this.comparisonResults.addChangedFilePath(newDirectoryChild.getAbsolutePath());

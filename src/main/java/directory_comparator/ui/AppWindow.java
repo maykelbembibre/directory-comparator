@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import directory_comparator.logic.PropertyManager;
 import directory_comparator.ui.components.DirectoryChooser;
 import directory_comparator.ui.components.FileJTextField;
 import directory_comparator.ui.components.HorizontalSeparator;
@@ -41,11 +42,12 @@ public class AppWindow extends JFrame {
 
 	public final static int GAP = 10;
 	
+	private final PropertyManager properties;
 	private final JPanel contentPane;
 	private final JFileChooser directoryChooser = new DirectoryChooser();
-	private FileJTextField oldDirectoryTextField = createJFileTextField();
-	private FileJTextField newDirectoryTextField = createJFileTextField();
-	private FileJTextField resultDirectoryTextField = createJFileTextField();
+	private final FileJTextField oldDirectoryTextField;
+	private final FileJTextField newDirectoryTextField;
+	private final FileJTextField resultDirectoryTextField;
 	private JButton oldDirectoryChooseButton;
 	private JButton newDirectoryChooseButton;
 	private JButton resultsDirectoryChooseButton;
@@ -55,6 +57,12 @@ public class AppWindow extends JFrame {
 	 * Creates the window.
 	 */
 	public AppWindow() {
+		this.properties = new PropertyManager("folder-comparator");
+		
+		this.oldDirectoryTextField = createJFileTextField("text.field.old.directory");
+		this.newDirectoryTextField = createJFileTextField("text.field.new.directory");
+		this.resultDirectoryTextField = createJFileTextField("text.field.results");
+		
 		//Set up the window.
 	    this.setTitle("Folder comparator");
 	    this.setMinimumSize(new Dimension(450, 350));
@@ -114,8 +122,8 @@ public class AppWindow extends JFrame {
 		jTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, jTextField.getPreferredSize().height));
 	}
 	
-	private static FileJTextField createJFileTextField() {
-		FileJTextField jFileTextField = new FileJTextField();
+	private FileJTextField createJFileTextField(String propertyKey) {
+		FileJTextField jFileTextField = new FileJTextField(this.properties, propertyKey);
 		adjustTextField(jFileTextField);
 		return jFileTextField;
 	}
